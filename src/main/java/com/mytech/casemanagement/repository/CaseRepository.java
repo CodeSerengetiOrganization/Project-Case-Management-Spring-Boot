@@ -19,5 +19,4 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
     @Query(value = "select * from dbo_CASE_STRING where id=:caseId", nativeQuery = true)
     Optional<CaseString> findByCaseIdNativeQuery(int caseId);*/
 
-
 }

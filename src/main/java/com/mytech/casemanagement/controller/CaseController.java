@@ -3,12 +3,10 @@ package com.mytech.casemanagement.controller;
 import com.mytech.casemanagement.entity.Case;
 import com.mytech.casemanagement.entity.CaseString;
 import com.mytech.casemanagement.service.CaseService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/cases")
@@ -32,4 +30,15 @@ public class CaseController {
         System.out.println(responseEntity);
         return responseEntity;
     }*/
+/*
+* Create a new case in db
+* */
+    @PostMapping    //should use URL:http://localhost:8080/api/cases
+//    @PostMapping("/") //shou use URL: http://localhost:8080/api/cases/
+    public ResponseEntity<Case> createCase(@RequestBody Case c){
+        Case savedCase = caseService.saveCase(c);
+        return ResponseEntity.ok(savedCase);
+    }
+
+
 }

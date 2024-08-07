@@ -25,4 +25,8 @@ public class CaseService {
 //        return caseRepository.findByCaseIdQuery(caseId);
 //        return caseRepository.findByCaseIdNativeQuery(caseId);
     }
+
+    public Case saveCase(Case c){
+        return caseRepository.save(c);
+    }
 }
