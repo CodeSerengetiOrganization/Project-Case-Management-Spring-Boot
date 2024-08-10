@@ -29,4 +29,8 @@ public class CaseService {
     public Case saveCase(Case c){
         return caseRepository.save(c);
     }
+
+    public Case updateCase(Case c){
+        return caseRepository.save(c);
+    }
 }

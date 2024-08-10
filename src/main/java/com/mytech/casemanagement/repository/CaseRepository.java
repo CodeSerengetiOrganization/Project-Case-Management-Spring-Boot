@@ -10,7 +10,8 @@ import java.util.Optional;
 //public interface CaseRepository extends JpaRepository<CaseString, Integer> {
 public interface CaseRepository extends JpaRepository<Case, Integer> {
     Optional<Case> findByCaseId(int caseId);
-/*    Optional<CaseString> findByCaseId(int caseId);*/
+
+    /*    Optional<CaseString> findByCaseId(int caseId);*/
 
 /*    @Query("select c from CaseString c")
     Optional<CaseString> findByCaseIdQuery(int caseId);*/
