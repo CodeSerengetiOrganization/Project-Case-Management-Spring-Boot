@@ -1,0 +1,3 @@
+deployableArtifact:
+  artifactId: "com-dd-api-cfg"
+  groupId: "com.dd.dbdc.bboas"
