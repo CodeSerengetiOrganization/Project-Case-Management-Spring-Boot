@@ -4,7 +4,6 @@ package com.mytech.casemanagement.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.security.Timestamp;
 import java.time.LocalDateTime;
 
 
@@ -21,11 +20,11 @@ public class Case {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "case_status", nullable = false)
-    private CaseStatus caseStatus;
+    private CaseStatusEnum caseStatusEnum;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "case_type", nullable = false)
-    private CaseType caseType;
+    private CaseTypeEnum caseTypeEnum;
 
     @Column(name = "created_by", nullable = false)
     private String createdBy;

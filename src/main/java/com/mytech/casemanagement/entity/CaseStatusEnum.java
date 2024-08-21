@@ -1,6 +1,6 @@
 package com.mytech.casemanagement.entity;
 
-public enum CaseStatus {
+public enum CaseStatusEnum {
     PendingDocument,
     PendingReview
 }

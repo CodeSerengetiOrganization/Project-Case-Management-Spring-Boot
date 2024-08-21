@@ -1,6 +1,6 @@
 package com.mytech.casemanagement.entity;
 
-public enum CaseType {
+public enum CaseTypeEnum {
     Fraud,
     NetNew,
     LOD
