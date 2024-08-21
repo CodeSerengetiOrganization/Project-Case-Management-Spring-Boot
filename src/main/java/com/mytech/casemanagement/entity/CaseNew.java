@@ -18,11 +18,11 @@ public class CaseNew {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "case_status", nullable = false)
-    private CaseStatus caseStatus;
+    private CaseStatusEnum caseStatusEnum;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "case_type", nullable = false)
-    private CaseType caseType;
+    private CaseTypeEnum caseTypeEnum;
 
     @Column(name = "created_by", nullable = false)
     private String createdBy;
