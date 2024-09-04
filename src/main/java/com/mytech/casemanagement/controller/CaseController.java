@@ -4,9 +4,11 @@ import com.mytech.casemanagement.entity.Case;
 import com.mytech.casemanagement.entity.CaseNew;
 import com.mytech.casemanagement.entity.CaseStatusEnum;
 import com.mytech.casemanagement.entity.CaseTypeEnum;
+import com.mytech.casemanagement.service.CaseActionHandlerService;
 import com.mytech.casemanagement.service.CaseService;
 import com.mytech.casemanagement.service.CaseServiceNew;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,9 @@ public class CaseController {
     private CaseService caseService;
     @Autowired
     private CaseServiceNew caseServiceNew;
+
+    @Autowired
+    private CaseActionHandlerService caseActionHandlerService;
 
     @GetMapping("/{caseId}")
     public ResponseEntity<Case> getCaseByCaseId(@PathVariable int caseId) {
@@ -117,6 +122,21 @@ public class CaseController {
 
             CaseNew createdCase = caseServiceNew.saveCase(caseNew);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdCase);
+    }
+/*
+* This is the V3 version, covered by ticket12
+* in this version, will use invokeHandler() method according to Strategy design pattern
+* */
+    @PostMapping("/v3/{workflow}/action/{action}")
+    public ResponseEntity<?> createCaseNew2(
+            @PathVariable("workflow") String workflow,
+            @PathVariable("action") String action,
+            @RequestBody CaseNew caseNew){
+        return invokeActionHandler(HttpMethod.POST.toString(), workflow,action,caseNew);
+    }
+
+    private ResponseEntity<?> invokeActionHandler(String methodType, String workflow, String action, CaseNew caseNew) {
+        return caseActionHandlerService.invokeActionHandler(methodType, workflow, action, caseNew);
     }
 
     @PatchMapping
