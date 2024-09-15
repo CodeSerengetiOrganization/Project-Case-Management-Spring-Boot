@@ -1,12 +1,16 @@
 package com.mytech.casemanagement.kafka.consumer;
 
 
+import com.mytech.casemanagement.service.CaseServiceNew;
 import io.swagger.client.model.CaseNew;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MessageListenerCaseNew {
+    @Autowired
+    CaseServiceNew caseServiceNew;
 
     //todo: to make topics as "${kafka.topic} in common config"
 /*    @KafkaListener(topics="test-topic", groupId = "case-consumer-1")
@@ -17,7 +21,8 @@ public class MessageListenerCaseNew {
 
     @KafkaListener(topics="test-topic", groupId = "case-consumer-1")
     public void consume(CaseNew message){
-        System.out.println("Received message: " + message);
+        System.out.println("Received message from Kafka: " + message);
+        caseServiceNew.saveCase(caseServiceNew.mapToCaseNewEntity(message));
     }
 }
 
