@@ -2,6 +2,8 @@ package com.mytech.casemanagement.service;
 
 import com.mytech.casemanagement.entity.Case;
 import com.mytech.casemanagement.entity.CaseNew;
+import com.mytech.casemanagement.entity.CaseStatusEnum;
+import com.mytech.casemanagement.entity.CaseTypeEnum;
 import com.mytech.casemanagement.repository.CaseRepository;
 import com.mytech.casemanagement.repository.CaseRepositoryNew;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +56,49 @@ public class CaseServiceNew {
 
         }
         return updatedCaseNew;*/
+    }
+/*
+* to covert a CaseNew from Kafka message to a CaseNew Entity
+* Note: In Kafka message ,the CaseNew is constrained by schema, which means constrained by the swagger generated java class,
+* but for case management system, it has to use CaseNew Entity, which is created manually by developer as swagger can NOT add @Table annotation automaticlally.
+* */
+    public CaseNew mapToCaseNewEntity(io.swagger.client.model.CaseNew caseInMessage) {
+        CaseNew caseNewEntity=new CaseNew();
+        if (caseInMessage != null){
+            caseNewEntity.setNote(caseInMessage.getNote());
+            caseNewEntity.setCreatedBy(caseInMessage.getCreatedBy());
+            caseNewEntity.setCreateDate(caseInMessage.getCreateDate());
+            caseNewEntity.setModifiedDate(caseInMessage.getModifiedDate());
+            caseNewEntity.setPendingReviewDate(caseInMessage.getPendingReviewDate());
+
+            io.swagger.client.model.CaseNew.CaseTypeEnum caseType = caseInMessage.getCaseType();
+            switch (caseType){
+                case LOD:
+                    caseNewEntity.setCaseTypeEnum(CaseTypeEnum.LOD);
+                    break;
+                case FRAUD:
+                    caseNewEntity.setCaseTypeEnum(CaseTypeEnum.Fraud);
+                    break;
+                case NETNEW:
+                    caseNewEntity.setCaseTypeEnum(CaseTypeEnum.NetNew);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown CaseType when converting from Kafka message to entity: "+caseType.toString());
+            }
+
+            io.swagger.client.model.CaseNew.CaseStatusEnum caseStatus = caseInMessage.getCaseStatus();
+            switch (caseStatus){
+                case PENDINGDOCUMENT:
+                    caseNewEntity.setCaseStatusEnum(CaseStatusEnum.PendingDocument);
+                    break;
+                case PENDINGREVIEW:
+                    caseNewEntity.setCaseStatusEnum(CaseStatusEnum.PendingReview);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown CaseStatus when converting from Kafka message to entity: "+caseStatus.toString());
+            }
+
+        }
+        return caseNewEntity;
     }
 }
