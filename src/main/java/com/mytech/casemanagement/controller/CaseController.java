@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.client.model.RetrieveCaseEmptyRs;
 
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 @RestController
@@ -64,9 +65,10 @@ public class CaseController {
         if (caseNewEntity !=null){
             returnCase.setCaseId(caseNewEntity.getCaseId());
             returnCase.setCreatedBy(caseNewEntity.getCreatedBy());
-            returnCase.setCreateDate(caseNewEntity.getCreateDate());
-            returnCase.setModifiedDate(caseNewEntity.getModifiedDate());
-            returnCase.setPendingReviewDate(caseNewEntity.getPendingReviewDate());
+            ZoneOffset offset= ZoneOffset.UTC;
+            returnCase.setCreateDate(caseNewEntity.getCreateDate().atOffset(offset));
+            returnCase.setModifiedDate(caseNewEntity.getModifiedDate().atOffset(offset));
+            returnCase.setPendingReviewDate(caseNewEntity.getPendingReviewDate().atOffset(offset));
             returnCase.setNote(caseNewEntity.getNote());
             CaseStatusEnum caseStatus = caseNewEntity.getCaseStatusEnum();
             switch (caseStatus) {

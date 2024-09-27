@@ -67,9 +67,9 @@ public class CaseServiceNew {
         if (caseInMessage != null){
             caseNewEntity.setNote(caseInMessage.getNote());
             caseNewEntity.setCreatedBy(caseInMessage.getCreatedBy());
-            caseNewEntity.setCreateDate(caseInMessage.getCreateDate());
+/*            caseNewEntity.setCreateDate(caseInMessage.getCreateDate());
             caseNewEntity.setModifiedDate(caseInMessage.getModifiedDate());
-            caseNewEntity.setPendingReviewDate(caseInMessage.getPendingReviewDate());
+            caseNewEntity.setPendingReviewDate(caseInMessage.getPendingReviewDate());*/
 
             io.swagger.client.model.CaseNew.CaseTypeEnum caseType = caseInMessage.getCaseType();
             switch (caseType){
