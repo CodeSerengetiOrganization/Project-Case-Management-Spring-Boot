@@ -31,20 +31,6 @@
 		<spring-kafka.version>3.1.1</spring-kafka.version>
 	</properties>
 
-	<!-- Dependency management section to handle version conflicts -->
-	<dependencyManagement>
-		<dependencies>
-			<!-- Import Spring Cloud BOM (Bill of Materials) -->
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>2023.0.1</version> <!-- Adjust to the needed version -->
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.mytech.banking</groupId>
@@ -146,12 +132,6 @@
 			<artifactId>spring-kafka-test</artifactId>
 			<version>${spring-kafka.version}</version>
 			<scope>test</scope>
-		</dependency>
-
-		<!-- Spring Cloud Gateway -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-gateway</artifactId>
 		</dependency>
 
 	</dependencies>
