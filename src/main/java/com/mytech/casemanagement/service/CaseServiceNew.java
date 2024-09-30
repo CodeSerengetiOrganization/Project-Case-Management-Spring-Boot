@@ -74,13 +74,13 @@ public class CaseServiceNew {
             io.swagger.client.model.CaseNew.CaseTypeEnum caseType = caseInMessage.getCaseType();
             switch (caseType){
                 case LOD:
-                    caseNewEntity.setCaseTypeEnum(CaseTypeEnum.LOD);
+                    caseNewEntity.setCaseType(CaseTypeEnum.LOD);
                     break;
                 case FRAUD:
-                    caseNewEntity.setCaseTypeEnum(CaseTypeEnum.Fraud);
+                    caseNewEntity.setCaseType(CaseTypeEnum.Fraud);
                     break;
                 case NETNEW:
-                    caseNewEntity.setCaseTypeEnum(CaseTypeEnum.NetNew);
+                    caseNewEntity.setCaseType(CaseTypeEnum.NetNew);
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown CaseType when converting from Kafka message to entity: "+caseType.toString());
@@ -89,10 +89,10 @@ public class CaseServiceNew {
             io.swagger.client.model.CaseNew.CaseStatusEnum caseStatus = caseInMessage.getCaseStatus();
             switch (caseStatus){
                 case PENDINGDOCUMENT:
-                    caseNewEntity.setCaseStatusEnum(CaseStatusEnum.PendingDocument);
+                    caseNewEntity.setCaseStatus(CaseStatusEnum.PendingDocument);
                     break;
                 case PENDINGREVIEW:
-                    caseNewEntity.setCaseStatusEnum(CaseStatusEnum.PendingReview);
+                    caseNewEntity.setCaseStatus(CaseStatusEnum.PendingReview);
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown CaseStatus when converting from Kafka message to entity: "+caseStatus.toString());
