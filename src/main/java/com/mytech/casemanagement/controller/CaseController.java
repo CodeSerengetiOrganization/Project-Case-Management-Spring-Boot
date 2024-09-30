@@ -1,9 +1,6 @@
 package com.mytech.casemanagement.controller;
 
-import com.mytech.casemanagement.entity.Case;
-import com.mytech.casemanagement.entity.CaseNew;
-import com.mytech.casemanagement.entity.CaseStatusEnum;
-import com.mytech.casemanagement.entity.CaseTypeEnum;
+import com.mytech.casemanagement.entity.*;
 import com.mytech.casemanagement.service.CaseActionHandlerService;
 import com.mytech.casemanagement.service.CaseService;
 import com.mytech.casemanagement.service.CaseServiceNew;
@@ -70,7 +67,7 @@ public class CaseController {
             returnCase.setModifiedDate(caseNewEntity.getModifiedDate().atOffset(offset));
             returnCase.setPendingReviewDate(caseNewEntity.getPendingReviewDate().atOffset(offset));
             returnCase.setNote(caseNewEntity.getNote());
-            CaseStatusEnum caseStatus = caseNewEntity.getCaseStatusEnum();
+            CaseStatusEnum caseStatus = caseNewEntity.getCaseStatus();
             switch (caseStatus) {
                 case PendingDocument:
                     returnCase.setCaseStatus(io.swagger.client.model.CaseNew.CaseStatusEnum.PENDINGDOCUMENT);
@@ -81,7 +78,7 @@ public class CaseController {
                 default:
                     throw new IllegalArgumentException("Unknown CaseStatusEnum value: " + caseStatus);
             }
-            CaseTypeEnum caseType = caseNewEntity.getCaseTypeEnum();
+            CaseTypeEnum caseType = caseNewEntity.getCaseType();
             switch (caseType) {
                 case Fraud:
                     returnCase.setCaseType(io.swagger.client.model.CaseNew.CaseTypeEnum.FRAUD);
@@ -139,6 +136,25 @@ public class CaseController {
 
     private ResponseEntity<?> invokeActionHandler(String methodType, String workflow, String action, CaseNew caseNew) {
         return caseActionHandlerService.invokeActionHandler(methodType, workflow, action, caseNew);
+    }
+
+    /*
+     * This is the V4 version, covered by ticket29
+     * in this version, will use String type to receive request body, this way is more generic for ohter actions in future
+     * */
+    @PostMapping("/v4/{workflow}/action/{action}")
+    public ResponseEntity<?> createCaseNew2(
+            @PathVariable("workflow") String workflow,
+            @PathVariable("action") String action,
+            @RequestBody String requestStr){
+        System.out.println("workflow:"+workflow);
+        return invokeActionHandler4(HttpMethod.POST.toString(), workflow,action,requestStr);
+
+    }
+
+    private ResponseEntity<?> invokeActionHandler4(String methodType, String workflow, String action, String requestStr) {
+
+        return caseActionHandlerService.invokeActionHandlerStrRequest(methodType, workflow, action, requestStr);
     }
 
     @PatchMapping
