@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CaseActionHandlerService {
 
@@ -43,17 +45,20 @@ public class CaseActionHandlerService {
         mockedWorkflow="workflowAlhpa";
         CaseActionHandler caseActionHandler=lookupCaseActionHandler(mockedWorkflow,action);
 
-        RequestObject requestObject = getRequestObject(requestStr,RequestObject.class);
-        CaseNew caseFromPayload = null;
-        try {
-            caseFromPayload = objectMapper.treeToValue(requestObject.getPayload(), CaseNew.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
-        System.out.println("caseFromPayload:"+caseFromPayload);
-        return caseActionHandler.doAction();
-
+       RequestObject requestObject = getRequestObject(requestStr,RequestObject.class);
+        ResponseEntity<?> responseEntity = Optional.ofNullable(requestObject)
+                .map(RequestObject::getPayload)
+                .map(payload -> {
+                    try {
+                        CaseNew caseFromPayload = objectMapper.treeToValue(payload, CaseNew.class);
+                        System.out.println("caseFromPayload:" + caseFromPayload);
+                        return caseActionHandler.doAction();
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException("Error parsing payload to CaseNew object", e);
+                    }
+                })
+                .orElseThrow(() -> new RuntimeException("requestObject is null or empty or format is not correct;"));
+        return responseEntity;
     }
 
     private RequestObject getRequestObject(String requestStr, Class<RequestObject> requestObjectClass) {
@@ -61,6 +66,8 @@ public class CaseActionHandlerService {
         try {
             requestObject = objectMapper.readValue(requestStr, RequestObject.class);
         } catch (JsonProcessingException e) {
+            //todo: add logging
+            //todo: use customized exception
             throw new RuntimeException(e);
         }
         return requestObject;
