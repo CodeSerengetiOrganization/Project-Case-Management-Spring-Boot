@@ -7,6 +7,8 @@ import com.mytech.casemanagement.entity.RequestObject;
 import com.mytech.casemanagement.handler.CaseActionHandler;
 import com.mytech.casemanagement.handler.CreateCaseActionHandler;
 import com.mytech.casemanagement.handler.DefaultCaseActionHandler;
+import org.apache.logging.log4j.util.Strings;
+import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -54,10 +56,11 @@ public class CaseActionHandlerService {
                         System.out.println("caseFromPayload:" + caseFromPayload);
                         return caseActionHandler.doAction();
                     } catch (JsonProcessingException e) {
+                        //lambda can not throw checked exceptions, and for now the exception system is not yet created, so temperately use RuntimeException to wrapper it.
                         throw new RuntimeException("Error parsing payload to CaseNew object", e);
                     }
                 })
-                .orElseThrow(() -> new RuntimeException("requestObject is null or empty or format is not correct;"));
+                .orElseThrow(() -> new IllegalArgumentException("requestObject is null or empty or format is not correct;"));
         return responseEntity;
     }
 

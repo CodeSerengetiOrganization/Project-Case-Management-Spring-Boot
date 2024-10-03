@@ -1,5 +1,6 @@
 package com.mytech.casemanagement.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mytech.casemanagement.entity.*;
 import com.mytech.casemanagement.service.CaseActionHandlerService;
 import com.mytech.casemanagement.service.CaseService;
@@ -154,7 +155,19 @@ public class CaseController {
 
     private ResponseEntity<?> invokeActionHandler4(String methodType, String workflow, String action, String requestStr) {
         // todo: should try-catch all known exceptions and handle them.
-        return caseActionHandlerService.invokeActionHandlerStrRequest(methodType, workflow, action, requestStr);
+        //todo: should log all the exceptions.
+        ResponseEntity<?> responseEntity = null;
+        try {
+            responseEntity = caseActionHandlerService.invokeActionHandlerStrRequest(methodType, workflow, action, requestStr);
+        } catch (IllegalArgumentException e) {
+//            throw new RuntimeException(e);
+            System.out.println("catch exception in Controller: "+ e.getMessage());
+        }catch (RuntimeException e){
+            System.out.println("catch exception in Controller: "+ e.getMessage());
+        }catch (Exception e) {
+            System.out.println("catch exception in Controller: "+ e.getMessage());
+        }
+        return responseEntity;
     }
 
     @PatchMapping
