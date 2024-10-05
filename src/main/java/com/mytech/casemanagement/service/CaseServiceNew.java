@@ -1,10 +1,9 @@
 package com.mytech.casemanagement.service;
 
-import com.mytech.casemanagement.entity.Case;
 import com.mytech.casemanagement.entity.CaseNew;
 import com.mytech.casemanagement.entity.CaseStatusEnum;
 import com.mytech.casemanagement.entity.CaseTypeEnum;
-import com.mytech.casemanagement.repository.CaseRepository;
+import com.mytech.casemanagement.exception.CaseResourceNotFoundException;
 import com.mytech.casemanagement.repository.CaseRepositoryNew;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,8 +13,16 @@ import java.util.Optional;
 @Service
 public class CaseServiceNew {
 
-    @Autowired
+/*    @Autowired
+    private CaseRepositoryNew caseRepository;*/
     private CaseRepositoryNew caseRepository;
+
+    @Autowired
+    public CaseServiceNew(CaseRepositoryNew repository){
+        this.caseRepository = repository;
+    }
+
+
 
 /*
     public Optional<Case> getCaseByCaseId(int caseId) {
@@ -34,29 +41,26 @@ public class CaseServiceNew {
     }
 
     public CaseNew updateCase(CaseNew caseNew){
-/*        //todo: need to crate customized exception for it
-        if (null == caseNew) throw new RuntimeException("the case to update is null");*/
 
-        Optional<Integer> caseId = Optional
-                .ofNullable(caseNew)
-                .map(CaseNew::getCaseId);
-        if (caseId.isPresent() && caseId.get()>0){  //use caseId.get()>0 to make sure casId exist in payload, as when caseId is missing in payload, the CaseNew entity will initialized caseId with 0;
-            Optional<CaseNew> retrievedCase = caseRepository.findByCaseId(caseId.get());
-            if (retrievedCase.isPresent()){
-                CaseNew updatedCaseNew = caseRepository.save(caseNew);
-                return updatedCaseNew;
-            }else{
-                throw new RuntimeException("caseID not existing in database");
-            }
-
+        if(caseNew == null){
+            throw new IllegalArgumentException("case instance is missing in when updating");
         }
-        throw new RuntimeException("caseID not existing in request body");
-
- /*       else{
-
+        int caseIdInPayload=caseNew.getCaseId();
+        if(caseIdInPayload == 0){   //todo: need unit test code to double check
+            throw new CaseResourceNotFoundException(String.format("caseID not existing in request body"));
         }
-        return updatedCaseNew;*/
+        if(caseIdInPayload <0){
+            throw new IllegalArgumentException(String.format("caseId [%d] format is less than 0",caseIdInPayload));
+        }
+        Optional<CaseNew> retrievedCase = caseRepository.findByCaseId(caseIdInPayload);
+        if(retrievedCase.isPresent()){
+            return caseRepository.save(caseNew);
+        }else{
+            throw new CaseResourceNotFoundException(String. format("caseID [%d] not existing in database",caseIdInPayload));
+        }
     }
+
+
 /*
 * to covert a CaseNew from Kafka message to a CaseNew Entity
 * Note: In Kafka message ,the CaseNew is constrained by schema, which means constrained by the swagger generated java class,
