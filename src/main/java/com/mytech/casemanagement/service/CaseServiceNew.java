@@ -41,31 +41,26 @@ public class CaseServiceNew {
     }
 
     public CaseNew updateCase(CaseNew caseNew){
-/*        //todo: need to crate customized exception for it
-        if (null == caseNew) throw new RuntimeException("the case to update is null");*/
 
-        Optional<Integer> caseId = Optional
-                .ofNullable(caseNew)
-                .map(CaseNew::getCaseId);
-        if (caseId.isPresent()){  //use caseId.get()>0 to make sure casId exist in payload, as when caseId is missing in payload, the CaseNew entity will initialized caseId with 0;
-            if (caseId.get() ==0){  //caseId is primitive type int,so it will be 0 if try to get()
-                throw new CaseResourceNotFoundException(String.format("caseID not existing in request body"));
-            }
-            if(caseId.get()<0){
-                throw new IllegalArgumentException(String.format("caseId [%d] format is less than 0",caseId.get()));
-            }
-            Optional<CaseNew> retrievedCase = caseRepository.findByCaseId(caseId.get());
-            if (retrievedCase.isPresent()){
-                CaseNew updatedCaseNew = caseRepository.save(caseNew);
-                return updatedCaseNew;
-            }else{
-                throw new CaseResourceNotFoundException(String. format("caseID [%d] not existing in database",caseId.get()));
-            }
-
+        if(caseNew == null){
+            throw new IllegalArgumentException("case instance is missing in when updating");
         }
-        throw new CaseResourceNotFoundException(String.format("caseID not existing in request body"));
-
+        int caseIdInPayload=caseNew.getCaseId();
+        if(caseIdInPayload == 0){   //todo: need unit test code to double check
+            throw new CaseResourceNotFoundException(String.format("caseID not existing in request body"));
+        }
+        if(caseIdInPayload <0){
+            throw new IllegalArgumentException(String.format("caseId [%d] format is less than 0",caseIdInPayload));
+        }
+        Optional<CaseNew> retrievedCase = caseRepository.findByCaseId(caseIdInPayload);
+        if(retrievedCase.isPresent()){
+            return caseRepository.save(caseNew);
+        }else{
+            throw new CaseResourceNotFoundException(String. format("caseID [%d] not existing in database",caseIdInPayload));
+        }
     }
+
+
 /*
 * to covert a CaseNew from Kafka message to a CaseNew Entity
 * Note: In Kafka message ,the CaseNew is constrained by schema, which means constrained by the swagger generated java class,
