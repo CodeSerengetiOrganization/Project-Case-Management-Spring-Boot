@@ -4,6 +4,7 @@ import com.mytech.casemanagement.entity.CaseNew;
 import com.mytech.casemanagement.entity.CaseStatusEnum;
 import com.mytech.casemanagement.entity.CaseTypeEnum;
 import com.mytech.casemanagement.exception.CaseResourceNotFoundException;
+import com.mytech.casemanagement.exception.handler.CaseNewNotProvidedException;
 import com.mytech.casemanagement.repository.CaseRepositoryNew;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,9 @@ public class CaseServiceNew {
     public CaseNew updateCase(CaseNew caseNew){
 /*        //todo: need to crate customized exception for it
         if (null == caseNew) throw new RuntimeException("the case to update is null");*/
-
+        if (caseNew == null) {
+            throw new CaseNewNotProvidedException("CaseNew object must be provided");
+        }
         Optional<Integer> caseId = Optional
                 .ofNullable(caseNew)
                 .map(CaseNew::getCaseId);
