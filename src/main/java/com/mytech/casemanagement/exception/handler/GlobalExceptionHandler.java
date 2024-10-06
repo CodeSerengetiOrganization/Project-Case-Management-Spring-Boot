@@ -1,5 +1,6 @@
 package com.mytech.casemanagement.exception.handler;
 
+import com.mytech.casemanagement.exception.CaseNewNotProvidedException;
 import com.mytech.casemanagement.exception.CaseResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

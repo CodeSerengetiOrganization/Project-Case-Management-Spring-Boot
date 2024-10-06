@@ -4,7 +4,6 @@ import com.mytech.casemanagement.entity.CaseNew;
 import com.mytech.casemanagement.entity.CaseStatusEnum;
 import com.mytech.casemanagement.entity.CaseTypeEnum;
 import com.mytech.casemanagement.exception.CaseResourceNotFoundException;
-import com.mytech.casemanagement.exception.handler.CaseNewNotProvidedException;
 import com.mytech.casemanagement.repository.CaseRepositoryNew;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

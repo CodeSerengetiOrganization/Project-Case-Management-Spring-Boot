@@ -1,6 +1,7 @@
 package com.mytech.casemanagement.exception.handler;
 
 
+import com.mytech.casemanagement.exception.CaseNewNotProvidedException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

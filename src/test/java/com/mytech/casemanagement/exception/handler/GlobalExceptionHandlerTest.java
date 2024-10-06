@@ -1,7 +1,7 @@
 package com.mytech.casemanagement.exception.handler;
 
+import com.mytech.casemanagement.exception.CaseNewNotProvidedException;
 import com.mytech.casemanagement.exception.CaseResourceNotFoundException;
-import com.mytech.casemanagement.exception.handler.GlobalExceptionHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ public class GlobalExceptionHandlerTest {
     public void shouldReturnBadRequestWhenCaseResourceNotFoundExceptionIsThrown() {
         CaseResourceNotFoundException exception = new CaseResourceNotFoundException("Resource not found");
 
-        ResponseEntity<?> response = handler.handleException(exception);
+        ResponseEntity<?> response = handler.handleCaseResourceNotFoundException(exception);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Resource not found", response.getBody());
@@ -60,7 +60,7 @@ public class GlobalExceptionHandlerTest {
 
         ResponseEntity<String> response = handler.handleRuntimeException(exception);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals("Runtime exception occurred", response.getBody());
     }
 
@@ -71,7 +71,7 @@ public class GlobalExceptionHandlerTest {
 
         ResponseEntity<String> response = handler.handleException(exception);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals("General exception occurred", response.getBody());
     }
 }
