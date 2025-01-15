@@ -42,19 +42,28 @@ public class CaseController {
 
     @GetMapping("v3/{caseId}")
     public ResponseEntity<?> getCaseByCaseIdNew2(@PathVariable int caseId) {
+        //1. handle invalid caseId input
+        if(caseId<=0){
+            return new ResponseEntity<>("Invalid caseId: must be a positive integer.Current caseId:"+caseId,HttpStatus.BAD_REQUEST);
+        }
+
         RetrieveCaseEmptyRs retrieveCaseEmptyRs=new RetrieveCaseEmptyRs();
-        try{
+//        try{
             Optional<CaseNew> caseByCaseId = caseServiceNew.getCaseByCaseId(caseId);
-            CaseNew caseNewEntity = caseByCaseId.get();
-            if (null !=caseNewEntity){
-//                io.swagger.client.model.CaseNew convertedCaseNew=(io.swagger.client.model.CaseNew) caseNewEntity;
-//                io.swagger.client.model.CaseNew swaggerCaseNew=CaseNewMapper.INSTANCE.toSwaggerCaseNew(caseNewEntity);
+
+
+            if(caseByCaseId.isPresent()){
+                //normal logic
+                CaseNew caseNewEntity = caseByCaseId.get();
                 io.swagger.client.model.CaseNew convertedSwaggerCaseNew=converToSwaggerCaseNew(caseNewEntity);
                 retrieveCaseEmptyRs.setCase(convertedSwaggerCaseNew);
+            }else{  //2. handle the case returned from service not existing
+                return new ResponseEntity<>("Case not found for ID:"+caseId,HttpStatus.NOT_FOUND);
             }
-        }catch (Exception e){
+/*        }catch (Exception e){   //3. handle unexpected exceptions
             e.printStackTrace();
-        }
+            return new ResponseEntity<>("unexpected internal server error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }*/
         return new ResponseEntity<>(retrieveCaseEmptyRs, HttpStatus.OK);
     }
 
