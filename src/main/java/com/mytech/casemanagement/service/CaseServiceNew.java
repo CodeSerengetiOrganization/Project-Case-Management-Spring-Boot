@@ -31,6 +31,9 @@ public class CaseServiceNew {
 */
 
     public Optional<CaseNew> getCaseByCaseId(int caseId) {
+        if(caseId <= 0){
+            throw new IllegalArgumentException("Case ID must be greater than zero. Requested caseId:"+caseId);
+        }
         return caseRepository.findByCaseId(caseId);
 //        return caseRepository.findByCaseIdQuery(caseId);
 //        return caseRepository.findByCaseIdNativeQuery(caseId);

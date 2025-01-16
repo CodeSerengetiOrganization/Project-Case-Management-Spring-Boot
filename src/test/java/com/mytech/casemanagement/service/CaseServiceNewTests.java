@@ -58,6 +58,12 @@ public class CaseServiceNewTests {
     }
 
     @Test
+    public void retrieveNegativeCaseIdShouldThrowException(){
+        int negativeCaseId=-1;
+        Assertions.assertThrows(IllegalArgumentException.class, ()->caseServiceNew.getCaseByCaseId(negativeCaseId));
+    }
+
+    @Test
     public void updateCaseShouldThrowExceptionWhenNoCaseIdInParameter(){
         CaseResourceNotFoundException exception = Assertions.assertThrows(CaseResourceNotFoundException.class, () -> {
             caseServiceNew.updateCase(caseWithNoId);
