@@ -57,7 +57,7 @@ public class CaseController {
                         .body("Case not found for ID: " + caseId));
 
     }
-    
+
     private io.swagger.client.model.CaseNew converToSwaggerCaseNew(CaseNew caseNewEntity) {
         io.swagger.client.model.CaseNew returnCase=new io.swagger.client.model.CaseNew();
         if (caseNewEntity !=null){

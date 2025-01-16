@@ -93,7 +93,7 @@ public class CaseControllerTests {
         when(caseServiceNew.getCaseByCaseId(nonExistingCaseId)).thenReturn(Optional.empty());
         ResponseEntity<?> response = caseController.getCaseByCaseIdNew2(nonExistingCaseId);
         Assertions.assertEquals(HttpStatus.NOT_FOUND,response.getStatusCode());
-        Assertions.assertTrue(response.getBody().toString().contains("Case not found for ID:"+nonExistingCaseId));
+        Assertions.assertTrue(response.getBody().toString().contains("Case not found for ID: "+nonExistingCaseId));
     }
 /*
 * A scenario with input caseId is string rather than an integer.
