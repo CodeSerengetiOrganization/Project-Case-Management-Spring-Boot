@@ -1,15 +1,11 @@
 package com.mytech.casemanagement.controller;
 
-import com.mytech.casemanagement.entity.CaseNew;
 import com.mytech.casemanagement.service.CaseActionHandlerService;
-import com.mytech.casemanagement.service.CaseService;
 import com.mytech.casemanagement.service.CaseServiceNew;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -38,8 +34,6 @@ public class CaseControllerTests {
 
     @MockBean
     private CaseServiceNew caseServiceNew;
-    @MockBean
-    private CaseService caseService;    //we do not use it in current version,but have to keep it here to make code run.
 
     @Autowired
     MockMvc mockMvc;

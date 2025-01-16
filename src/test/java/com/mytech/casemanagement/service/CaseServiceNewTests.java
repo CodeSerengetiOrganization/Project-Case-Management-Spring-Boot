@@ -68,7 +68,6 @@ public class CaseServiceNewTests {
         CaseResourceNotFoundException exception = Assertions.assertThrows(CaseResourceNotFoundException.class, () -> {
             caseServiceNew.updateCase(caseWithNoId);
         });
-        System.out.println("exception message: "+exception.getMessage());
         Assertions.assertTrue(exception.getMessage().contains("not existing in request body"));
 
     }
@@ -78,7 +77,6 @@ public class CaseServiceNewTests {
         IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
             caseServiceNew.updateCase(caseNew);
         });
-        System.out.println("exception message: "+exception.getMessage());
         Assertions.assertTrue(exception.getMessage().contains("format is less than 0"));
 
     }
