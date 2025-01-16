@@ -46,27 +46,18 @@ public class CaseController {
         if(caseId<=0){
             return new ResponseEntity<>("Invalid caseId: must be a positive integer.Current caseId:"+caseId,HttpStatus.BAD_REQUEST);
         }
+        return caseServiceNew.getCaseByCaseId(caseId)
+                .<ResponseEntity<?>> map(caseNew -> {
+                    RetrieveCaseEmptyRs retrieveCaseEmptyRs=new RetrieveCaseEmptyRs();
+                    io.swagger.client.model.CaseNew convertedSwaggerCaseNew=converToSwaggerCaseNew(caseNew);
+                    retrieveCaseEmptyRs.setCase(convertedSwaggerCaseNew);
+                    return ResponseEntity.status(HttpStatus.OK).body(retrieveCaseEmptyRs);
+                })
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Case not found for ID: " + caseId));
 
-        RetrieveCaseEmptyRs retrieveCaseEmptyRs=new RetrieveCaseEmptyRs();
-//        try{
-            Optional<CaseNew> caseByCaseId = caseServiceNew.getCaseByCaseId(caseId);
-
-
-            if(caseByCaseId.isPresent()){
-                //normal logic
-                CaseNew caseNewEntity = caseByCaseId.get();
-                io.swagger.client.model.CaseNew convertedSwaggerCaseNew=converToSwaggerCaseNew(caseNewEntity);
-                retrieveCaseEmptyRs.setCase(convertedSwaggerCaseNew);
-            }else{  //2. handle the case returned from service not existing
-                return new ResponseEntity<>("Case not found for ID:"+caseId,HttpStatus.NOT_FOUND);
-            }
-/*        }catch (Exception e){   //3. handle unexpected exceptions
-            e.printStackTrace();
-            return new ResponseEntity<>("unexpected internal server error",HttpStatus.INTERNAL_SERVER_ERROR);
-        }*/
-        return new ResponseEntity<>(retrieveCaseEmptyRs, HttpStatus.OK);
     }
-
+    
     private io.swagger.client.model.CaseNew converToSwaggerCaseNew(CaseNew caseNewEntity) {
         io.swagger.client.model.CaseNew returnCase=new io.swagger.client.model.CaseNew();
         if (caseNewEntity !=null){
