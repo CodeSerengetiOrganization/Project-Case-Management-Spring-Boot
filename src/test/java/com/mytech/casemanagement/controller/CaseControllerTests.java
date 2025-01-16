@@ -39,7 +39,7 @@ public class CaseControllerTests {
     @MockBean
     private CaseServiceNew caseServiceNew;
     @MockBean
-    private CaseService caseService;
+    private CaseService caseService;    //we do not use it in current version,but have to keep it here to make code run.
 
     @Autowired
     MockMvc mockMvc;
@@ -96,7 +96,9 @@ public class CaseControllerTests {
         Assertions.assertTrue(response.getBody().toString().contains("Case not found for ID:"+nonExistingCaseId));
     }
 /*
-* A scenario with input caseId is string rather than an integer
+* A scenario with input caseId is string rather than an integer.
+* It is a must to use mockMvc to perform the API request, bcz a string type caseId will trigger MethodArgumentTypeMismatchException,
+* which is thrown by Spring framework BEFORE code goes into the getCaseByCaseId() method.
 * */
     @Test
     public void testGetCaseWithInvalidCaseIdShouldHandledByControllerAdvice() throws Exception {
