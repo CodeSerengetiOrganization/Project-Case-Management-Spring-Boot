@@ -6,9 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    public GlobalExceptionHandler() {
+        System.out.println("GlobalExceptionHandler initialized");
+    }
 
     @ExceptionHandler(CaseNewNotProvidedException.class)
     public ResponseEntity<String> handleCaseNewNotProvidedException(CaseNewNotProvidedException e){
@@ -22,6 +26,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e){
         return ResponseEntity.badRequest().body(e.getMessage());    //return http status 400
+    }
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<String> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e){
+        String message = String.format("Invalid value '%s' for parameter '%s'. Expected type: %s.",
+                e.getValue(), e.getName(), e.getRequiredType().getSimpleName());
+        System.out.println("message from GlobalExceptionHandler:"+message);
+        return ResponseEntity.badRequest().body(message);
     }
 
     @ExceptionHandler(RuntimeException.class)
