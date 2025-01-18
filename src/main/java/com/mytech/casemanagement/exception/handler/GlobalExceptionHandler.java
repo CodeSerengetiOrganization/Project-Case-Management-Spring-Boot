@@ -1,6 +1,7 @@
 package com.mytech.casemanagement.exception.handler;
 
 import com.mytech.casemanagement.exception.CaseNewNotProvidedException;
+import com.mytech.casemanagement.exception.CaseParsingException;
 import com.mytech.casemanagement.exception.CaseResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +32,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e){
         String message = String.format("Invalid value '%s' for parameter '%s'. Expected type: %s.",
                 e.getValue(), e.getName(), e.getRequiredType().getSimpleName());
-        System.out.println("message from GlobalExceptionHandler:"+message);
+//        System.out.println("message from GlobalExceptionHandler:"+message);
         return ResponseEntity.badRequest().body(message);
     }
 
+    @ExceptionHandler(CaseParsingException.class)
+    public ResponseEntity<String> handleCaseParsingException(CaseParsingException e){
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRuntimeException(RuntimeException e){
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());    //return http status 500
