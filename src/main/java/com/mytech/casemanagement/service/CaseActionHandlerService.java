@@ -64,6 +64,9 @@ public ResponseEntity<?> invokeActionHandlerStrRequest(String methodType, String
         try {
             // Convert payload to CaseNew and Perform the action
             CaseNew caseFromPayload = objectMapper.treeToValue(requestObject.getPayload(), CaseNew.class);
+            if (requestObject.getPayload() == null || requestObject.getPayload().isEmpty()) {
+                throw new CaseParsingException("Payload cannot be empty.");
+            }
             return caseActionHandler.doAction();
         }catch(JsonProcessingException e){
             // todo: Log the error for debugging

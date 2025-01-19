@@ -34,17 +34,20 @@ public class CaseActionHandlerServiceTests {
 
     @Test
     public void invokeActionHandlerStrRequestShouldPass() throws JsonProcessingException {
-        String goodRequestStr = "{\n" +
-                "    \"action\":\"create\",\n" +
-                "    \"caseId\": 51,\n" +
+        String goodRequestStr="{\n" +
+                "  \"action\": \"create\",\n" +
+                "  \"payload\": {\n" +
+                "    \"caseId\": 1,\n" +
                 "    \"caseStatus\": \"PendingDocument\",\n" +
                 "    \"caseType\": \"NetNew\",\n" +
                 "    \"createdBy\": \"Tony Stark\",\n" +
-                "    \"createDate\": \"2024-09-07T18:59:35\",\n" +
-                "    \"modifiedDate\": \"2024-09-08T18:59:35\",\n" +
-                "    \"pendingReviewDate\": \"2024-09-09T18:59:35\",\n" +
-                "    \"note\": \"Good payload in Unit test CaseActionHandlerServiceTests.\"\n" +
+                "    \"createDate\": \"2024-01-01T12:00:00\",\n" +
+                "    \"modifiedDate\": \"2024-01-02T12:00:00\",\n" +
+                "    \"pendingReviewDate\": \"2024-01-03T12:00:00\",\n" +
+                "    \"note\": \"Good payload in Unit test CaseActionHandlerServiceTests.\",\n" +
+                "  }\n" +
                 "}";
+
         ResponseEntity<String> mockedResponse = ResponseEntity.status(HttpStatus.OK)
                 .body("Mocked Successful Response from unit test");
 

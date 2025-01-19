@@ -3,6 +3,8 @@ package com.mytech.casemanagement.controller;
 import com.mytech.casemanagement.entity.*;
 import com.mytech.casemanagement.service.CaseActionHandlerService;
 import com.mytech.casemanagement.service.CaseServiceNew;
+import com.mytech.casemanagement.service.CaseValidationService;
+import com.mytech.casemanagement.validator.RequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,12 @@ public class CaseController {
 
     @Autowired
     private CaseActionHandlerService caseActionHandlerService;
+
+    @Autowired
+    private CaseValidationService caseValidationService;
+
+    @Autowired
+    private RequestValidator requestValidator;
 
     @GetMapping("v3/{caseId}")
     public ResponseEntity<?> getCaseByCaseIdNew2(@PathVariable int caseId) {
@@ -107,26 +115,20 @@ public class CaseController {
             @PathVariable("workflow") String workflow,
             @PathVariable("action") String action,
             @RequestBody String requestStr){
-        System.out.println("workflow:"+workflow);
+//        System.out.println("workflow:"+workflow);
+        requestValidator.validateRequestPayload(requestStr);
+        caseValidationService.validateWorkflow(workflow);
+        caseValidationService.validateAction(workflow);
+
         return invokeActionHandler4(HttpMethod.POST.toString(), workflow,action,requestStr);
 
     }
 
+
+
     private ResponseEntity<?> invokeActionHandler4(String methodType, String workflow, String action, String requestStr) {
-        // todo: should try-catch all known exceptions and handle them.
         //todo: should log all the exceptions.
-        ResponseEntity<?> responseEntity = null;
-        try {
-            responseEntity = caseActionHandlerService.invokeActionHandlerStrRequest(methodType, workflow, action, requestStr);
-        } catch (IllegalArgumentException e) {
-//            throw new RuntimeException(e);
-            System.out.println("catch exception in Controller: "+ e.getMessage());
-        }catch (RuntimeException e){
-            System.out.println("catch exception in Controller: "+ e.getMessage());
-        }catch (Exception e) {
-            System.out.println("catch exception in Controller: "+ e.getMessage());
-        }
-        return responseEntity;
+        return caseActionHandlerService.invokeActionHandlerStrRequest(methodType, workflow, action, requestStr);
     }
 
     @PatchMapping("/v2")
