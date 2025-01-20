@@ -30,6 +30,11 @@ public class CaseActionHandlerService {
     @Autowired
     ObjectMapper objectMapper;
 
+    // Add setter for testing purposes
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     public ResponseEntity<?> invokeActionHandler(String methodType, String workflow, String action, CaseNew caseNew) {
 //        return null;
         String mockedWorkflow=workflow;
@@ -63,7 +68,10 @@ public ResponseEntity<?> invokeActionHandlerStrRequest(String methodType, String
 
         try {
             // Convert payload to CaseNew and Perform the action
-            CaseNew caseFromPayload = objectMapper.treeToValue(requestObject.getPayload(), CaseNew.class);
+            JsonNode payloadNode = requestObject.getPayload();
+            System.out.println("payloadNode:"+payloadNode);
+            CaseNew caseFromPayload = objectMapper.treeToValue(payloadNode, CaseNew.class);
+//            CaseNew caseFromPayload = objectMapper.treeToValue((JsonNode)requestObject.getPayload(), CaseNew.class);
             if (requestObject.getPayload() == null || requestObject.getPayload().isEmpty()) {
                 throw new CaseParsingException("Payload cannot be empty.");
             }
