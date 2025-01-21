@@ -31,6 +31,10 @@ public class CaseController {
     @Autowired
     private RequestValidator requestValidator;
 
+/*    public void setCaseValidationService(CaseValidationService caseValidationService){
+        this.caseValidationService=caseValidationService;
+    }*/
+
     @GetMapping("v3/{caseId}")
     public ResponseEntity<?> getCaseByCaseIdNew2(@PathVariable int caseId) {
         //1. handle invalid caseId input
@@ -115,10 +119,10 @@ public class CaseController {
             @PathVariable("workflow") String workflow,
             @PathVariable("action") String action,
             @RequestBody String requestStr){
-//        System.out.println("workflow:"+workflow);
+        System.out.println("workflow:"+workflow);
         requestValidator.validateRequestPayload(requestStr);
         caseValidationService.validateWorkflow(workflow);
-        caseValidationService.validateAction(workflow);
+        caseValidationService.validateAction(action);
 
         return invokeActionHandler4(HttpMethod.POST.toString(), workflow,action,requestStr);
 

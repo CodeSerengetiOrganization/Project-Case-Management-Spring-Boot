@@ -28,7 +28,6 @@ import static org.mockito.Mockito.when;
 //@ExtendWith(MockitoExtension.class)   //no need as SpringExtension.class will manage the instance lifecycle
 @ExtendWith(SpringExtension.class)
 @SpringJUnitConfig(JacksonConfig.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CaseActionHandlerServiceTests {
 
     @InjectMocks
