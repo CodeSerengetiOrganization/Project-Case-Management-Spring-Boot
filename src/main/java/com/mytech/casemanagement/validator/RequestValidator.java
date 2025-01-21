@@ -1,8 +1,8 @@
 package com.mytech.casemanagement.validator;
 
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Service;
 
-@Configuration
+@Service
 public class RequestValidator {
     public void validateRequestPayload(String requestStr){
         if(requestStr == null || requestStr.isBlank()){
