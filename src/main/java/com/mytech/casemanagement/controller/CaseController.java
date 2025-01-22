@@ -93,23 +93,6 @@ public class CaseController {
         return returnCase;
     }
 
-/*
- * Create a new case in db
-* This is the V3 version, covered by ticket12
-* in this version,  use invokeHandler() method according to Strategy design pattern
-* */
-    @PostMapping("/v3/{workflow}/action/{action}")
-    public ResponseEntity<?> createCaseNew2(
-            @PathVariable("workflow") String workflow,
-            @PathVariable("action") String action,
-            @RequestBody CaseNew caseNew){
-        return invokeActionHandler(HttpMethod.POST.toString(), workflow,action,caseNew);
-    }
-
-    private ResponseEntity<?> invokeActionHandler(String methodType, String workflow, String action, CaseNew caseNew) {
-        return caseActionHandlerService.invokeActionHandler(methodType, workflow, action, caseNew);
-    }
-
     /*
      * This is the V4 version, covered by ticket29
      * in this version, will use String type to receive request body, this way is more generic for ohter actions in future

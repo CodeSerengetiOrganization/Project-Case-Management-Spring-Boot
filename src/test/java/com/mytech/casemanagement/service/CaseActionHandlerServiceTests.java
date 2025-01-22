@@ -1,20 +1,15 @@
 package com.mytech.casemanagement.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mytech.casemanagement.config.JacksonConfig;
 import com.mytech.casemanagement.entity.CaseNew;
-import com.mytech.casemanagement.entity.RequestObject;
 import com.mytech.casemanagement.exception.CaseParsingException;
-import com.mytech.casemanagement.handler.CaseActionHandler;
 import com.mytech.casemanagement.handler.CreateCaseActionHandler;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +17,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 //@ExtendWith(MockitoExtension.class)   //no need as SpringExtension.class will manage the instance lifecycle
@@ -64,7 +58,7 @@ public class CaseActionHandlerServiceTests {
                 .body("Mocked Successful Response from unit test");
 
         //mock behavior
-        when(createCaseActionHandler.doAction())
+        when(createCaseActionHandler.doAction(any(CaseNew.class)))
                 .thenReturn((ResponseEntity) mockedResponse);
 
         //invoke method and assert
