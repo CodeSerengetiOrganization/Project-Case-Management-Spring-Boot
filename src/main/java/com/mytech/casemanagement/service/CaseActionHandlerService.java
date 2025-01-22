@@ -35,17 +35,6 @@ public class CaseActionHandlerService {
         this.objectMapper = objectMapper;
     }
 
-    public ResponseEntity<?> invokeActionHandler(String methodType, String workflow, String action, CaseNew caseNew) {
-//        return null;
-        String mockedWorkflow=workflow;
-        mockedWorkflow="workflowAlhpa";
-        CaseActionHandler caseActionHandler=lookupCaseActionHandler(mockedWorkflow,action);
-
-        return caseActionHandler.doAction();
-/*        return ResponseEntity.status(HttpStatus.OK)
-                .body("New response body from CaseActionHandlerService");*/
-    }
-
     /*
     * This version is for V4 endpoint to handle String type RequestStr from payload
     * */
@@ -75,7 +64,7 @@ public ResponseEntity<?> invokeActionHandlerStrRequest(String methodType, String
             if (requestObject.getPayload() == null || requestObject.getPayload().isEmpty()) {
                 throw new CaseParsingException("Payload cannot be empty.");
             }
-            return caseActionHandler.doAction();
+            return caseActionHandler.doAction(caseFromPayload);
         }catch(JsonProcessingException e){
             // todo: Log the error for debugging
             // Throw a custom exception with meaningful context
