@@ -21,4 +21,9 @@ public class CreateCaseActionHandler implements CaseActionHandler{
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(savedCase);
     }
+
+    @Override
+    public String getActionName() {
+        return "create";
+    }
 }

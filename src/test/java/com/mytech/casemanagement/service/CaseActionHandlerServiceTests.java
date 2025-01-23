@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mytech.casemanagement.config.JacksonConfig;
 import com.mytech.casemanagement.entity.CaseNew;
 import com.mytech.casemanagement.exception.CaseParsingException;
+import com.mytech.casemanagement.handler.CaseActionHandlerRegistry;
 import com.mytech.casemanagement.handler.CreateCaseActionHandler;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 //@ExtendWith(MockitoExtension.class)   //no need as SpringExtension.class will manage the instance lifecycle
@@ -28,6 +30,9 @@ public class CaseActionHandlerServiceTests {
     private CaseActionHandlerService caseActionHandlerService;
     @Mock
     private CreateCaseActionHandler createCaseActionHandler;
+
+    @Mock
+    private CaseActionHandlerRegistry caseActionHandlerRegistry;
 /*    @Mock
     ObjectMapper objectMapper;*/
     @Autowired
@@ -60,7 +65,7 @@ public class CaseActionHandlerServiceTests {
         //mock behavior
         when(createCaseActionHandler.doAction(any(CaseNew.class)))
                 .thenReturn((ResponseEntity) mockedResponse);
-
+        when(caseActionHandlerRegistry.getHandler(anyString())).thenReturn(createCaseActionHandler);
         //invoke method and assert
         ResponseEntity<?> response = caseActionHandlerService.invokeActionHandlerStrRequest("methodTypeNotUsing", "workFlowCanBeMocked", "create", goodRequestStr);
         Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
