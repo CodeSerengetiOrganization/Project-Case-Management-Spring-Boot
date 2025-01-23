@@ -8,6 +8,7 @@ import com.mytech.casemanagement.entity.CaseNew;
 import com.mytech.casemanagement.entity.RequestObject;
 import com.mytech.casemanagement.exception.CaseParsingException;
 import com.mytech.casemanagement.handler.CaseActionHandler;
+import com.mytech.casemanagement.handler.CaseActionHandlerRegistry;
 import com.mytech.casemanagement.handler.CreateCaseActionHandler;
 import com.mytech.casemanagement.handler.DefaultCaseActionHandler;
 import org.apache.logging.log4j.util.Strings;
@@ -30,6 +31,9 @@ public class CaseActionHandlerService {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    CaseActionHandlerRegistry caseActionHandlerRegistry;
+
     // Add setter for testing purposes
     public void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -45,7 +49,7 @@ public ResponseEntity<?> invokeActionHandlerStrRequest(String methodType, String
         }
 
         // Mock workflow for now
-        String mockedWorkflow="create";
+        String mockedWorkflow="workflowA";
         CaseActionHandler caseActionHandler=lookupCaseActionHandler(mockedWorkflow,action);
 
         // Parse request object
@@ -85,11 +89,12 @@ public ResponseEntity<?> invokeActionHandlerStrRequest(String methodType, String
 
     private CaseActionHandler lookupCaseActionHandler(String workflow, String action) {
         //todo: need to add workflow related logic
-        switch (action){
+        return caseActionHandlerRegistry.getHandler(action);
+/*        switch (action){
             case "create":
               return createCaseActionHandler;
             default:
                 return defaultCaseActionHandler;
-        }
+        }*/
     }
 }

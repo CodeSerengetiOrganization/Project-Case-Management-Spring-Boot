@@ -12,4 +12,9 @@ public class DefaultCaseActionHandler implements CaseActionHandler{
         return ResponseEntity.status(HttpStatus.OK)
                 .body("This is from DefaultCaseActionHandler.doAction() method");
     }
+
+    @Override
+    public String getActionName() {
+        return "default";
+    }
 }
