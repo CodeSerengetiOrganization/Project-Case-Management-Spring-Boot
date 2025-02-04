@@ -1,6 +1,8 @@
 package com.mytech.casemanagement.controller;
 
 import com.mytech.casemanagement.entity.*;
+import com.mytech.casemanagement.exception.CaseResourceNotFoundException;
+import com.mytech.casemanagement.exception.InvalidCaseIdException;
 import com.mytech.casemanagement.service.CaseActionHandlerService;
 import com.mytech.casemanagement.service.CaseServiceNew;
 import com.mytech.casemanagement.service.CaseValidationService;
@@ -39,7 +41,7 @@ public class CaseController {
     public ResponseEntity<?> getCaseByCaseIdNew2(@PathVariable int caseId) {
         //1. handle invalid caseId input
         if(caseId<=0){
-            return new ResponseEntity<>("Invalid caseId: must be a positive integer.Current caseId:"+caseId,HttpStatus.BAD_REQUEST);
+            throw new InvalidCaseIdException("Invalid caseId: must be a positive integer.Current caseId:"+caseId);
         }
         return caseServiceNew.getCaseByCaseId(caseId)
                 .<ResponseEntity<?>> map(caseNew -> {
@@ -48,8 +50,9 @@ public class CaseController {
                     retrieveCaseEmptyRs.setCase(convertedSwaggerCaseNew);
                     return ResponseEntity.status(HttpStatus.OK).body(retrieveCaseEmptyRs);
                 })
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Case not found for ID: " + caseId));
+                .orElseThrow(()->new CaseResourceNotFoundException(String.format("Case not found for ID: %d,workflow: %s.",caseId,"mockedWorkflow")));
+/*                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Case not found for ID: " + caseId));*/
 
     }
 
