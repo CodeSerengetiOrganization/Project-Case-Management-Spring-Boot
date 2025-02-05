@@ -12,7 +12,7 @@ import java.time.LocalDate;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    public static final String invalidCaseIdExceptionErrorCode = "INVALID_CAE_ID";
+    public static final String invalidCaseIdExceptionErrorCode = "INVALID_CASE_ID";
     public static final String caseResourceNotFoundExceptionErrorCode = "CASE_RESOURCE_NOT_FOUND";
     public static final int httpBadRequestStatus = 400;
     public GlobalExceptionHandler() {
@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
         String message = String.format("Invalid value type of '%s' for parameter '%s'. Expected type: %s.",
                 e.getValue(), e.getName(), e.getRequiredType().getSimpleName());
         ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setErrorCode(caseResourceNotFoundExceptionErrorCode);
+        errorResponse.setErrorCode(invalidCaseIdExceptionErrorCode);
         errorResponse.setStatus(httpBadRequestStatus);
         errorResponse.setMessage(message);
         errorResponse.setTimestamp(LocalDate.now());

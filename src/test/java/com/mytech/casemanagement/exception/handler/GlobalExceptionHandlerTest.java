@@ -1,14 +1,21 @@
 package com.mytech.casemanagement.exception.handler;
 
+import com.mytech.casemanagement.entity.ErrorResponse;
 import com.mytech.casemanagement.exception.CaseNewNotProvidedException;
 import com.mytech.casemanagement.exception.CaseResourceNotFoundException;
+import com.mytech.casemanagement.exception.InvalidCaseIdException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class GlobalExceptionHandlerTest {
 
@@ -36,10 +43,11 @@ public class GlobalExceptionHandlerTest {
     public void shouldReturnBadRequestWhenCaseResourceNotFoundExceptionIsThrown() {
         CaseResourceNotFoundException exception = new CaseResourceNotFoundException("Resource not found");
 
-        ResponseEntity<?> response = handler.handleCaseResourceNotFoundException(exception);
+        ResponseEntity<ErrorResponse> response = handler.handleCaseResourceNotFoundException(exception);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Resource not found", response.getBody());
+        ErrorResponse body = response.getBody();
+        assertEquals("Resource not found",body.getMessage());
     }
 
     @Test
@@ -51,6 +59,48 @@ public class GlobalExceptionHandlerTest {
         ResponseEntity<?> response = handler.handleCaseNewNotProvidedException(exception);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(expectedMessage, response.getBody());
+    }
+    @Test
+    @DisplayName("Should return exception message when InvalidCaseIdException is thrown")
+    public void shouldReturnBadRequestAndExceptionMessageWhenInvalidCaseIdExceptionIsThrown() {
+        String expectedMessage = "InvalidCaseIdException occurred";
+        InvalidCaseIdException exception = new InvalidCaseIdException(expectedMessage);
+
+        ResponseEntity<ErrorResponse> response = handler.handleInvalidCaseIdException(exception);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        ErrorResponse body = (ErrorResponse)response.getBody();
+        assertEquals("InvalidCaseIdException occurred",body.getMessage());
+    }
+    @Test
+    @DisplayName("Should return exception message when MethodArgumentTypeMismatchException is thrown")
+    public void shouldReturnBadRequestAndExceptionMessageWhenMethodArgumentTypeMismatchExceptionIsThrown() {
+/*        String expectedMessage = "MethodArgumentTypeMismatchException occurred";
+        MethodArgumentTypeMismatchException exception = new MethodArgumentTypeMismatchException(expectedMessage);
+
+        ResponseEntity<ErrorResponse> response = handler.handleInvalidCaseIdException(exception);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        ErrorResponse body = (ErrorResponse)response.getBody();
+        assertEquals("InvalidCaseIdException occurred",body.getMessage());*/
+        // Arrange
+        String parameterName = "id";
+        String invalidValue = "abc";
+        String expectedType = "Long";
+        MethodArgumentTypeMismatchException exception = mock(MethodArgumentTypeMismatchException.class);
+
+        when(exception.getName()).thenReturn(parameterName);
+        when(exception.getValue()).thenReturn(invalidValue);
+        when(exception.getRequiredType()).thenAnswer(invocation -> Long.class); // ✅ Properly handles generic return
+
+        // Act
+        ResponseEntity<ErrorResponse> response = handler.handleMethodArgumentTypeMismatchException(exception);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(400, response.getStatusCodeValue());
+        assertNotNull(response.getBody());
+        assertEquals(String.format("Invalid value type of '%s' for parameter '%s'. Expected type: %s.",
+                invalidValue, parameterName, expectedType), response.getBody().getMessage());
+        assertEquals(LocalDate.now(), response.getBody().getTimestamp());
     }
 
     @Test

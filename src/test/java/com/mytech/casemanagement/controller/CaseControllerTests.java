@@ -1,6 +1,9 @@
 package com.mytech.casemanagement.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mytech.casemanagement.config.JacksonConfig;
+import com.mytech.casemanagement.entity.ErrorResponse;
 import com.mytech.casemanagement.service.CaseActionHandlerService;
 import com.mytech.casemanagement.service.CaseServiceNew;
 import com.mytech.casemanagement.service.CaseValidationService;
@@ -22,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -60,6 +64,8 @@ public class CaseControllerTests {
     @Autowired
     private CaseController caseController; // Autowire the controller
 
+    @Autowired ObjectMapper objectMapper;
+
     private String requestStr="{\n" +
             "    \"action\":\"create\",\n" +
             "    \"payload\": {\n" +
@@ -73,18 +79,6 @@ public class CaseControllerTests {
             "        \"note\": \"using RequestObject mapping.\"\n" +
             "    }\n" +
             "}";
-/*    @Configuration
-    static class TestConfig{
-        @Bean
-        public CaseValidationService caseValidationService(){
-            return new CaseValidationService();
-        };
-    }*/
-
-/*    @BeforeEach
-    public void setup(){
-        caseController.setCaseValidationService();
-    }*/
 
     @Test
     public void happyPathShouldReturnResponseEntity(){
@@ -98,18 +92,22 @@ public class CaseControllerTests {
         String body = (String)response.getBody();
         System.out.println("body: "+body);
         Assertions.assertTrue(body.contains("Successful Response"));
-
-/*        ResponseEntity<String> mockResponse = ResponseEntity.ok("Success");
-        when(caseActionHandlerService.invokeActionHandlerStrRequest(anyString(), anyString(), anyString(), anyString()))
-                .thenReturn((ResponseEntity<?>) mockResponse);*/
     }
     @Test
-    public void testGetCaseWithCaseIdNotExistingShouldReturnResponseEntityWithErrorMessage(){
+    public void testGetCaseWithCaseIdNotExistingShouldReturnResponseEntityWithErrorMessage() throws Exception {
         int nonExistingCaseId=98761234;
-        when(caseServiceNew.getCaseByCaseId(nonExistingCaseId)).thenReturn(Optional.empty());
-        ResponseEntity<?> response = caseController.getCaseByCaseIdNew2(nonExistingCaseId);
-        Assertions.assertEquals(HttpStatus.NOT_FOUND,response.getStatusCode());
-        Assertions.assertTrue(response.getBody().toString().contains("Case not found for ID: "+nonExistingCaseId));
+        mockMvc.perform(get("/api/cases/v3/"+nonExistingCaseId))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> {
+                    String content = result.getResponse().getContentAsString();
+                    JsonNode jsonNode = objectMapper.readTree(content);
+                    String errorCode = jsonNode.get("errorCode").asText();
+                    String status = jsonNode.get("status").asText();
+                    String message = jsonNode.get("message").asText();
+                    Assertions.assertEquals("CASE_RESOURCE_NOT_FOUND",errorCode);
+                    Assertions.assertEquals("400",status);
+                    Assertions.assertTrue(message.contains("Case not found for ID: 98761234,workflow: mockedWorkflow"));
+                });
     }
 /*
 * A scenario with input caseId is string rather than an integer.
@@ -122,22 +120,36 @@ public class CaseControllerTests {
         mockMvc.perform(get("/api/cases/v3/"+invalidCaseId)) // Replace "/v3/{caseId}" with your endpoint
                 .andExpect(status().isBadRequest()) // Expecting 400 Bad Request
                 .andExpect(result -> {
-                    String responseMessage = result.getResponse().getContentAsString();
-                    String expectedMessage = String.format("Invalid value '%s' for parameter '%s'. Expected type: %s.",
-                            invalidCaseId, "caseId", "int");
-                    assert responseMessage.equals(expectedMessage) : "Unexpected error message: " + responseMessage;
+                    // Parse JSON response
+//                    ObjectMapper objectMapper = new ObjectMapper();
+                    JsonNode jsonNode = objectMapper.readTree(result.getResponse().getContentAsString());
+
+                    //Extract error message;
+                    String errorCode = jsonNode.get("errorCode").asText();
+                    String status = jsonNode.get("status").asText();
+                    String message = jsonNode.get("message").asText();
+                    Assertions.assertEquals("INVALID_CASE_ID",errorCode);
+                    Assertions.assertEquals("400",status);
+                    Assertions.assertTrue(message.contains("Invalid value type of"));
                 });
     }
     /*
     * A scenario with input caseId is a negative value
     * */
     @Test
-    public void testGetCaseWithNegativeCaseIdShouldReturnResponseEntityWithErrorMessage(){
+    public void testGetCaseWithNegativeCaseIdShouldReturnResponseEntityWithErrorMessage() throws Exception {
         int negativeCaseId=-1;
-        ResponseEntity<?> response = caseController.getCaseByCaseIdNew2(negativeCaseId);
-        Assertions.assertEquals(HttpStatus.BAD_REQUEST,response.getStatusCode());
-        Assertions.assertTrue(response.getBody().toString().contains("Invalid caseId: must be a positive integer.Current caseId:"+negativeCaseId));
-//        System.out.println(response.getBody().toString());
+        mockMvc.perform(get("/api/cases/v3/"+negativeCaseId))
+                .andExpect(status().isBadRequest())
+                .andExpect(result ->{
+                    JsonNode jsonNode = objectMapper.readTree(result.getResponse().getContentAsString());
+                    String errorCode = jsonNode.get("errorCode").asText();
+                    String status = jsonNode.get("status").asText();
+                    String message = jsonNode.get("message").asText();
+                    Assertions.assertEquals("INVALID_CASE_ID",errorCode);
+                    Assertions.assertEquals("400",status);
+                    Assertions.assertTrue(message.contains("Invalid caseId: must be a positive integer.Current caseId:"+negativeCaseId));
+                });
     }
 
     @Test
@@ -147,8 +159,6 @@ public class CaseControllerTests {
         Assertions.assertThrows(IllegalArgumentException.class,()->{
             caseController.createCaseNew2("anyWorkflow","anyAction",requestStr);
         });
-/*        ResponseEntity<?> response = caseController.createCaseNew2("dar", "create", requestStr);
-        Assertions.assertNull(response);*/
     }
     @Test
     public void createCaseWithInvalidWorkflowShouldThrowException() throws Exception {
@@ -180,5 +190,4 @@ public class CaseControllerTests {
         Assertions.assertTrue(mvcResult.getResponse().getContentAsString().contains("Action is invalid."));
 
     }
-
 }
