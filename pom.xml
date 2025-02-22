@@ -72,19 +72,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-<!--		if you're excluding spring-boot-starter-logging (which includes Logback) from your pom.xml when deploying to WildFly, then you absolutely need to add the spring-boot-starter-log4j2 dependency.-->
-<!--		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-log4j2</artifactId>
-		</dependency>-->
-
 		<!-- Servlet dependency required for WAR deployment -->
-<!--		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<scope>provided</scope>
-		</dependency>-->
-
 		<!-- https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api -->
 		<dependency>
 			<groupId>jakarta.servlet</groupId>
