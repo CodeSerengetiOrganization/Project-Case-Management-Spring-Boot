@@ -30,7 +30,8 @@
 		<java.version>17</java.version>
 		<spring-kafka.version>3.1.1</spring-kafka.version>
 	</properties>
-
+<!--	this is to build war package for Jboss -->
+	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>com.mytech.banking</groupId>
@@ -45,7 +46,53 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<!-- Exclude the embedded Tomcat, this is to build war package for Jboss-->
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+<!--				xclude spring-boot-starter-logging, this is to build war package for Jboss-->
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+<!--				Exclude Log4j2 Dependencies, as JBoss WildFly will provide it-->
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j-impl</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+<!--		if you're excluding spring-boot-starter-logging (which includes Logback) from your pom.xml when deploying to WildFly, then you absolutely need to add the spring-boot-starter-log4j2 dependency.-->
+<!--		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>-->
+
+		<!-- Servlet dependency required for WAR deployment -->
+<!--		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>-->
+
+		<!-- https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api -->
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>6.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+
 
 		<dependency>
 			<groupId>com.mysql</groupId>
